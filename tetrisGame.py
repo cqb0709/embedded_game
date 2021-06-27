@@ -4,6 +4,7 @@ from random import randint
 import time
 from PIL import Image, ImageDraw, ImageFont
 import setup
+import random
 
 SCREEN_WIDTH = 240
 SCREEN_HEIGHT = 240
@@ -231,21 +232,22 @@ def draw_next_block():
             #if 0 <= y_offset + self.ypos < HEIGHT and \
             #   0 <= x_offset + self.xpos < WIDTH and 
             if val != 0:
-                f_xpos = 460 + (x_offset) * PIECE_GRID_SIZE
-                f_ypos = 100 + (y_offset) * PIECE_GRID_SIZE
+                f_xpos = 175 + (x_offset) * PIECE_GRID_SIZE
+                f_ypos = 70 + (y_offset) * PIECE_GRID_SIZE
                 #!!
                 setup.draw.rectangle((f_xpos, f_ypos,
                                       f_xpos + PIECE_SIZE, f_ypos + PIECE_SIZE),
-                                      outline=COLORS[val], fill=COLORS[val])
+                                      outline=0, fill=COLORS[val])
 
 def draw_score(score):
     score_str = str(score).zfill(6)
-    pass
+    setup.draw.text((180, 10), score_str, font=setup.small_fnt, fill="#FFFFFF")
     #show text on diplay
 
 def draw_gameover_message():
     #same like score
-    pass
+    rcolor = tuple(int(x*255) for x in setup.hsv_to_rgb(random.random(), 1, 1))
+    setup.draw.text((32, 105), "GAME OVER", font=setup.large_fnt, fill=rcolor)
 
 def runGame():
     """ main func"""
@@ -264,12 +266,8 @@ def runGame():
         #
         #!!
         
-        game_over = is_game_over()
-        # Show GAMEOVER message
-        if game_over:
-            draw_gameover_message()
-        
-        else:   #tick = 0.1s, 1000/(5x10) = 20s
+        game_over = is_game_over()      
+        if not game_over:   #tick = 0.1s, 1000/(5x10) = 20s
             count += 5
             #Every 20s, interval is decreased = Faster drop speed
             if count % 1000 == 0:
@@ -309,9 +307,13 @@ def runGame():
         
         # Show score
         draw_score(score)
+        
+        # Show GAMEOVER message
+        if game_over:
+            draw_gameover_message()
  
         setup.disp.image(setup.image)
-        
+        setup.bg_black()
         time.sleep(0.03)
 runGame()
 sys.quit()
