@@ -22,8 +22,8 @@ FIELD / BLOCK(current) / BLOCK(NEXT) / MESSAGES
   Draw basic game field.(Only wall and floor) \
   Draw Block. \
   \
-  Dropping current block til crashed wall, floor or other blocks. \
-  If it crashes, block info is saved on field.
+  Dropping current block til crashing wall, floor or other blocks. \
+  If it crashes, block info will saved on field.
   
 3. LOOP
   Read button signal \
