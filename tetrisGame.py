@@ -15,6 +15,7 @@ INTERVAL = 40
 FIELD = [[0 for _ in range(WIDTH)] for _ in range(HEIGHT)]
 COLORS = ((0, 0, 0), (255, 165, 0), (0, 0, 255), (0, 255, 255), \
           (0, 255, 0), (255, 0, 255), (255, 255, 0), (255, 0, 0), (128, 128, 128))
+GRID_COLOR="#080404"
 BLOCK = None
 NEXT_BLOCK = None
 PIECE_SIZE = 9 # 9x9
@@ -159,15 +160,18 @@ class Block:
                 ## f_xpos : calculated on field area
                 f_xpos = PIECE_GRID_SIZE + (xpos + self.xpos) * PIECE_GRID_SIZE
                 f_ypos = PIECE_GRID_SIZE + (ypos + self.ypos) * PIECE_GRID_SIZE
-                #instead of pygame, draw rect with color // same type called!!!
-                setup.draw.rectangle((f_xpos, f_ypos,
-                                      f_xpos + PIECE_SIZE, f_ypos + PIECE_SIZE),
-                                      outline=0 , fill=COLORS[val])
+                
+                draw_rect(f_xpos, f_ypos, 0, val)
+
+def draw_rect(f_xpos, f_ypos, outline_color, val): #(x, y, outline color, block color)
+    setup.draw.rectangle((f_xpos, f_ypos,
+                          f_xpos + PIECE_SIZE, f_ypos + PIECE_SIZE),
+                          outline=outline_color , fill=COLORS[val])
 
 def erase_line():
     erased = 0
     ypos = HEIGHT-2
-    print(FIELD[ypos])
+    #print(FIELD[ypos])
     while ypos >=0:
         if  all(FIELD[ypos]) == True:
             del FIELD[ypos]
@@ -208,7 +212,7 @@ def set_game_field():
         FIELD.insert(0, [8, 0,0,0,0,0,0,0,0,0,0 ,8])
     
     FIELD.insert(HEIGHT-1, [8, 8,8,8,8,8,8,8,8,8,8 ,8])
-    #print(FIELD)
+    
  
 def draw_game_field():
     for y_offset in range(HEIGHT):
@@ -217,9 +221,10 @@ def draw_game_field():
             f_xpos = PIECE_GRID_SIZE + x_offset*PIECE_GRID_SIZE
             f_ypos = PIECE_GRID_SIZE + y_offset*PIECE_GRID_SIZE
             #!!
-            setup.draw.rectangle((f_xpos, f_ypos,
-                                      f_xpos + PIECE_SIZE, f_ypos + PIECE_SIZE),
-                                      outline=0, fill=COLORS[val])
+            if val == 0:
+                draw_rect(f_xpos, f_ypos, GRID_COLOR, val)
+            else:
+                draw_rect(f_xpos, f_ypos, 0, val)
 
 def draw_current_block():
     BLOCK.draw()
@@ -229,15 +234,11 @@ def draw_next_block():
         for x_offset in range(NEXT_BLOCK.size):
             index = y_offset * NEXT_BLOCK.size + x_offset
             val = NEXT_BLOCK.data[index]
-            #if 0 <= y_offset + self.ypos < HEIGHT and \
-            #   0 <= x_offset + self.xpos < WIDTH and 
             if val != 0:
                 f_xpos = 175 + (x_offset) * PIECE_GRID_SIZE
                 f_ypos = 70 + (y_offset) * PIECE_GRID_SIZE
                 #!!
-                setup.draw.rectangle((f_xpos, f_ypos,
-                                      f_xpos + PIECE_SIZE, f_ypos + PIECE_SIZE),
-                                      outline=0, fill=COLORS[val])
+                draw_rect(f_xpos, f_ypos, 0, val)
 
 def draw_score(score):
     score_str = str(score).zfill(6)
@@ -254,6 +255,7 @@ def runGame():
     global INTERVAL
     count = 0
     score = 0
+    signal = False
     game_over = False
     
     go_next_block(INTERVAL)
@@ -262,14 +264,10 @@ def runGame():
  
     while True:
         
-        #key event prep
-        #
-        #!!
-        
         game_over = is_game_over()      
-        if not game_over:   #tick = 0.1s, 1000/(5x10) = 20s
+        if not game_over:
             count += 5
-            #Every 20s, interval is decreased = Faster drop speed
+            #Interval decreased = Faster drop speed
             if count % 1000 == 0:
                 INTERVAL = max(1, INTERVAL - 2)
             erased = BLOCK.update(count)
@@ -281,6 +279,7 @@ def runGame():
             #key event
             next_x, next_y, next_t = \
                 BLOCK.xpos, BLOCK.ypos, BLOCK.turn
+            
             if not setup.button_B.value:
                 next_t = (next_t + 1) % 4
             if not setup.button_R.value:
@@ -314,6 +313,6 @@ def runGame():
  
         setup.disp.image(setup.image)
         setup.bg_black()
-        time.sleep(0.03)
+        time.sleep(0.01)
 runGame()
 sys.quit()
