@@ -20,8 +20,8 @@ FIELD / BLOCK(current) / BLOCK(NEXT) / MESSAGES
 
 2. Move array values to pixel coordinate. \
   Draw basic game field.(Only wall and floor) \
-  Draw Block.
-  
+  Draw Block. \
+  \
   Dropping current block til crashed wall, floor or other blocks. \
   If it crashes, block info is saved on field.
   
