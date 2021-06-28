@@ -33,3 +33,7 @@ FIELD / BLOCK(current) / BLOCK(NEXT) / MESSAGES
   Draw field & block continuously.
   
   Show display
+
+
+Environment:
+  Raspberry pi 4 + adafruit rgb display bonnet 1.3 (240x240)
