@@ -1,4 +1,3 @@
-import sys
 from math import sqrt
 from random import randint
 import time
@@ -314,5 +313,5 @@ def runGame():
         setup.disp.image(setup.image)
         setup.bg_black()
         time.sleep(0.01)
+
 runGame()
-sys.quit()
